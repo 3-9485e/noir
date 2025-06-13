@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Ant Globe Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern, clean styling for the Ant Globe visualization */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+        }
+
+        #globe {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            cursor: grab;
+        }
+
+        #globe.grabbing {
+            cursor: grabbing;
+        }
+
+        .ant {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-image: url('https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-3-b12ade.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform-origin: center;
+            transition: transform 0.15s ease-out, filter 0.2s ease;
+        }
+
+        .ant.hovered {
+            background-image: url('https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-2-5f5b49.png');
+            filter: drop-shadow(0 0 4px rgba(255, 59, 92, 0.7));
+        }
+
+        .ant.highlighted {
+            transform: scale(1.5) !important;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+            z-index: 1000 !important;
+        }
+
+        .tag {
+            position: absolute;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(25, 25, 35, 0.85), rgba(15, 15, 25, 0.95));
+            color: #ffffff;
+            border: 0;
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(45deg, #ff3b5c, #7600ff);
+            border-image-slice: 1;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            white-space: nowrap;
+            transform: translate(-50%, -100%);
+            margin-top: -15px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(255, 59, 92, 0.2),
+                inset 0 0 20px rgba(255, 59, 92, 0.05);
+            backdrop-filter: blur(8px) saturate(180%);
+            -webkit-backdrop-filter: blur(8px) saturate(180%);
+            text-transform: uppercase;
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%);
+            animation: borderFlow 8s infinite linear;
+            text-shadow: 0 0 5px rgba(255, 59, 92, 0.7);
+            z-index: 1001;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 59, 92, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(255, 59, 92, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 59, 92, 0); }
+        }
+
+        @keyframes borderFlow {
+            0% { border-image-source: linear-gradient(45deg, #ff3b5c, #7600ff); }
+            25% { border-image-source: linear-gradient(135deg, #ff3b5c, #00d8ff); }
+            50% { border-image-source: linear-gradient(225deg, #00d8ff, #00ff88); }
+            75% { border-image-source: linear-gradient(315deg, #00ff88, #ff3b5c); }
+            100% { border-image-source: linear-gradient(45deg, #ff3b5c, #7600ff); }
+        }
+
+        @media (max-width: 768px) {
+            #globe {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="globe"></div>
+
+    <script>
+        /**
+         * Enhanced Ant Globe Visualization
+         * An interactive 3D globe with ant elements
+         */
+        class EnhancedAntGlobe {
+            constructor() {
+                // Core properties
+                this.globe = document.getElementById('globe');
+                this.ants = [];
+                this.highlightedAnts = [];
+                this.allPoints = [];
+                
+                // Configuration
+                this.config = {
+                    radius: 250,
+                    centerX: 300,
+                    centerY: 300,
+                    rotationSpeed: 0.15,
+                    autoRotate: true,
+                    highlightCount: 7,
+                    latDensity: 7, // Density of latitude lines (lower = more ants)
+                    lonDensity: 7, // Density of longitude lines (lower = more ants)
+                    mouseRadius: 80, // Radius of mouse influence
+                    dragSensitivity: 0.3, // How sensitive dragging is
+                    antSize: 12 // Size of ant elements in pixels
+                };
+                
+                // State tracking
+                this.state = {
+                    rotation: { x: 0, y: 0 },
+                    autoRotation: 0,
+                    isDragging: false,
+                    lastMousePos: { x: 0, y: 0 },
+                    mousePos: { x: -1000, y: -1000 }
+                };
+                
+                // Custom tag messages
+                this.tagMessages = [
+                    'change detected',
+                    'area surveyed',
+                    'terrain mapped',
+                    'coordinates fixed',
+                    'region analyzed',
+                    'data imported',
+                    'layers updated',
+                    'signal processed',
+                    'zone identified',
+                    'pattern recognized'
+                ];
+                
+                // Initialize components
+                this.setupEventListeners();
+                this.initializeGlobe();
+            }
+            
+            setupEventListeners() {
+                // Mouse move for hover effects
+                document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+                
+                // Mouse down for dragging
+                this.globe.addEventListener('mousedown', this.handleMouseDown.bind(this));
+                document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+                document.addEventListener('mouseleave', this.handleMouseUp.bind(this));
+                
+                // Touch events for mobile
+                this.globe.addEventListener('touchstart', this.handleTouchStart.bind(this));
+                document.addEventListener('touchmove', this.handleTouchMove.bind(this));
+                document.addEventListener('touchend', this.handleTouchEnd.bind(this));
+                
+                // Window resize
+                window.addEventListener('resize', this.handleResize.bind(this));
+            }
+            
+            handleResize() {
+                // Update the center position based on current globe size
+                const rect = this.globe.getBoundingClientRect();
+                this.config.centerX = rect.width / 2;
+                this.config.centerY = rect.height / 2;
+            }
+            
+            handleMouseMove(event) {
+                // Get position relative to the globe element
+                const rect = this.globe.getBoundingClientRect();
+                this.state.mousePos.x = event.clientX - rect.left;
+                this.state.mousePos.y = event.clientY - rect.top;
+                
+                // Handle dragging
+                if (this.state.isDragging) {
+                    const deltaX = event.clientX - this.state.lastMousePos.x;
+                    const deltaY = event.clientY - this.state.lastMousePos.y;
+                    
+                    this.state.rotation.y += deltaX * this.config.dragSensitivity;
+                    this.state.rotation.x -= deltaY * this.config.dragSensitivity;
+                    
+                    // Limit vertical rotation to prevent flipping
+                    this.state.rotation.x = Math.max(-80, Math.min(80, this.state.rotation.x));
+                    
+                    this.state.lastMousePos.x = event.clientX;
+                    this.state.lastMousePos.y = event.clientY;
+                }
+            }
+            
+            handleMouseDown(event) {
+                this.state.isDragging = true;
+                this.state.lastMousePos.x = event.clientX;
+                this.state.lastMousePos.y = event.clientY;
+                this.globe.classList.add('grabbing');
+                
+                // Temporarily disable auto-rotation while dragging
+                this.wasAutoRotating = this.config.autoRotate;
+                this.config.autoRotate = false;
+            }
+            
+            handleMouseUp() {
+                if (this.state.isDragging) {
+                    this.state.isDragging = false;
+                    this.globe.classList.remove('grabbing');
+                    
+                    // Restore auto-rotation if it was on before
+                    if (this.wasAutoRotating) {
+                        this.config.autoRotate = true;
+                    }
+                }
+            }
+            
+            handleTouchStart(event) {
+                if (event.touches.length === 1) {
+                    event.preventDefault();
+                    this.state.isDragging = true;
+                    this.state.lastMousePos.x = event.touches[0].clientX;
+                    this.state.lastMousePos.y = event.touches[0].clientY;
+                    
+                    // Update mouse position for hover effects
+                    const rect = this.globe.getBoundingClientRect();
+                    this.state.mousePos.x = event.touches[0].clientX - rect.left;
+                    this.state.mousePos.y = event.touches[0].clientY - rect.top;
+                    
+                    // Temporarily disable auto-rotation while dragging
+                    this.wasAutoRotating = this.config.autoRotate;
+                    this.config.autoRotate = false;
+                }
+            }
+            
+            handleTouchMove(event) {
+                if (this.state.isDragging && event.touches.length === 1) {
+                    event.preventDefault();
+                    const deltaX = event.touches[0].clientX - this.state.lastMousePos.x;
+                    const deltaY = event.touches[0].clientY - this.state.lastMousePos.y;
+                    
+                    this.state.rotation.y += deltaX * this.config.dragSensitivity;
+                    this.state.rotation.x -= deltaY * this.config.dragSensitivity;
+                    
+                    // Limit vertical rotation
+                    this.state.rotation.x = Math.max(-80, Math.min(80, this.state.rotation.x));
+                    
+                    this.state.lastMousePos.x = event.touches[0].clientX;
+                    this.state.lastMousePos.y = event.touches[0].clientY;
+                    
+                    // Update mouse position for hover effects
+                    const rect = this.globe.getBoundingClientRect();
+                    this.state.mousePos.x = event.touches[0].clientX - rect.left;
+                    this.state.mousePos.y = event.touches[0].clientY - rect.top;
+                }
+            }
+            
+            handleTouchEnd() {
+                this.state.isDragging = false;
+                
+                // Restore auto-rotation if it was on before
+                if (this.wasAutoRotating) {
+                    this.config.autoRotate = true;
+                }
+            }
+            
+            initializeGlobe() {
+                this.createSpherePoints();
+                this.handleResize();
+                this.highlightRandomAnts();
+                this.animate();
+            }
+            
+            createSpherePoints() {
+                // Create a filled sphere using spherical coordinates with improved distribution
+                const { latDensity, lonDensity } = this.config;
+                
+                for (let lat = -90; lat <= 90; lat += latDensity) {
+                    // Adjust longitude step based on latitude to maintain even distribution
+                    const latRad = (lat * Math.PI) / 180;
+                    const circumference = Math.cos(latRad);
+                    // Adjust points density at poles
+                    const adjustedLonStep = circumference > 0.1 ? lonDensity / circumference : lonDensity * 3;
+                    
+                    for (let lon = -180; lon < 180; lon += adjustedLonStep) {
+                        // Add some randomness to make it look more natural
+                        const jitterLat = lat + (Math.random() - 0.5) * (latDensity * 0.3);
+                        const jitterLon = lon + (Math.random() - 0.5) * (adjustedLonStep * 0.3);
+                        
+                        this.allPoints.push({
+                            lat: jitterLat,
+                            lon: jitterLon
+                        });
+                    }
+                }
+                
+                // Create ant elements
+                this.allPoints.forEach((point, index) => {
+                    const ant = document.createElement('div');
+                    ant.className = 'ant';
+                    ant.dataset.lat = point.lat;
+                    ant.dataset.lon = point.lon;
+                    
+                    // Use fixed size for all ants
+                    ant.style.width = `${this.config.antSize}px`;
+                    ant.style.height = `${this.config.antSize}px`;
+                    
+                    // Random rotation for each ant
+                    ant.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    this.globe.appendChild(ant);
+                    this.ants.push(ant);
+                });
+                
+                console.log(`Created ${this.ants.length} ants`);
+            }
+            
+            // Convert lat/lon to 3D sphere coordinates with tilt
+            latLonTo3D(lat, lon) {
+                const { radius } = this.config;
+                const { rotation, autoRotation } = this.state;
+                
+                // Apply both manual rotation and auto rotation
+                const rotatedLon = lon + autoRotation + rotation.y;
+                
+                // Convert to radians
+                const latRad = (lat * Math.PI) / 180;
+                const lonRad = (rotatedLon * Math.PI) / 180;
+                
+                // Apply tilt from x rotation
+                const tiltRad = (rotation.x * Math.PI) / 180;
+                
+                // Calculate 3D coordinates with tilt
+                let x = radius * Math.cos(latRad) * Math.cos(lonRad);
+                let y = radius * Math.sin(latRad);
+                let z = radius * Math.cos(latRad) * Math.sin(lonRad);
+                
+                // Apply tilt transformation (rotate around X axis)
+                const newY = y * Math.cos(tiltRad) - z * Math.sin(tiltRad);
+                const newZ = y * Math.sin(tiltRad) + z * Math.cos(tiltRad);
+                
+                return { x, y: newY, z: newZ };
+            }
+            
+            // Project 3D to 2D with depth effects
+            project3DTo2D(x, y, z) {
+                const { centerX, centerY } = this.config;
+                
+                const screenX = centerX + x;
+                const screenY = centerY - y;
+                
+                // Only show ants on the visible hemisphere (with smoother transition)
+                const visible = z > -100;
+                
+                // Create depth effects with smoother gradient
+                const depth = (z + this.config.radius) / (2 * this.config.radius);
+                const brightness = Math.max(0.2, depth);
+                const scale = 0.5 + (depth * 0.6); // Smaller scale range for better visibility
+                
+                return { screenX, screenY, visible, brightness, scale, depth };
+            }
+            
+            updateAnts() {
+                this.ants.forEach(ant => {
+                    const lat = parseFloat(ant.dataset.lat);
+                    const lon = parseFloat(ant.dataset.lon);
+                    
+                    const pos3D = this.latLonTo3D(lat, lon);
+                    const pos2D = this.project3DTo2D(pos3D.x, pos3D.y, pos3D.z);
+                    
+                    if (pos2D.visible) {
+                        // Position the ant
+                        ant.style.left = `${pos2D.screenX}px`;
+                        ant.style.top = `${pos2D.screenY}px`;
+                        ant.style.opacity = pos2D.brightness.toString();
+                        
+                        // Check if ant is close to mouse cursor
+                        const dx = pos2D.screenX - this.state.mousePos.x;
+                        const dy = pos2D.screenY - this.state.mousePos.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < this.config.mouseRadius) {
+                            // Calculate scale based on distance (closer = larger)
+                            const hoverEffect = 1 - (distance / this.config.mouseRadius);
+                            const hoverScale = 1 + (hoverEffect * 0.8); // Up to 80% larger
+                            
+                            ant.style.transform = `scale(${pos2D.scale * hoverScale}) rotate(${Math.random() * 10 - 5}deg)`;
+                            ant.classList.add('hovered');
+                        } else {
+                            ant.style.transform = `scale(${pos2D.scale}) rotate(${Math.random() * 6 - 3}deg)`;
+                            ant.classList.remove('hovered');
+                        }
+                        
+                        ant.style.display = 'block';
+                        ant.style.zIndex = Math.floor(pos3D.z + this.config.radius).toString();
+                    } else {
+                        ant.style.display = 'none';
+                    }
+                });
+            }
+            
+            animate() {
+                // Update auto rotation if enabled
+                if (this.config.autoRotate && !this.state.isDragging) {
+                    this.state.autoRotation += this.config.rotationSpeed;
+                    if (this.state.autoRotation >= 360) this.state.autoRotation -= 360;
+                }
+                
+                // Update all ants
+                this.updateAnts();
+                
+                // Update tag positions for highlighted ants
+                if (this.highlightedAnts.length > 0) {
+                    this.updateTagPositions();
+                }
+                
+                requestAnimationFrame(this.animate.bind(this));
+            }
+            
+            highlightRandomAnts() {
+                // Clear previous highlights
+                this.highlightedAnts.forEach(ant => {
+                    ant.classList.remove('highlighted');
+                    const tagId = ant.dataset.tagId;
+                    const tag = document.getElementById(tagId);
+                    if (tag) tag.remove();
+                });
+                
+                this.highlightedAnts = [];
+                
+                // Shuffle messages for variety
+                const shuffledMessages = [...this.tagMessages].sort(() => Math.random() - 0.5);
+                
+                // Select random ants
+                for (let i = 0; i < this.config.highlightCount; i++) {
+                    // Try to find a visible ant to highlight
+                    let attempts = 0;
+                    let ant;
+                    
+                    do {
+                        const randomIndex = Math.floor(Math.random() * this.ants.length);
+                        ant = this.ants[randomIndex];
+                        attempts++;
+                        
+                        // Skip if already selected or not visible
+                        if (this.highlightedAnts.includes(ant) || ant.style.display === 'none') {
+                            ant = null;
+                        }
+                    } while (!ant && attempts < 50);
+                    
+                    // If we couldn't find a suitable ant after 50 attempts, skip this highlight
+                    if (!ant) continue;
+                    
+                    ant.classList.add('highlighted');
+                    
+                    // Create a tag for the ant
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `<span>${shuffledMessages[i % shuffledMessages.length]}</span>`;
+                    const tagId = 'ant-tag-' + i;
+                    tag.id = tagId;
+                    ant.dataset.tagId = tagId;
+                    this.globe.appendChild(tag);
+                    
+                    this.highlightedAnts.push(ant);
+                }
+            }
+            
+            updateTagPositions() {
+                this.highlightedAnts.forEach(ant => {
+                    const lat = parseFloat(ant.dataset.lat);
+                    const lon = parseFloat(ant.dataset.lon);
+                    
+                    const pos3D = this.latLonTo3D(lat, lon);
+                    const pos2D = this.project3DTo2D(pos3D.x, pos3D.y, pos3D.z);
+                    
+                    const tag = document.getElementById(ant.dataset.tagId);
+                    if (tag && pos2D.visible) {
+                        tag.style.left = `${pos2D.screenX}px`;
+                        tag.style.top = `${pos2D.screenY}px`;
+                        tag.style.display = 'block';
+                        
+                        // Ensure tag is on top of ant
+                        tag.style.zIndex = (parseInt(ant.style.zIndex || '0') + 1).toString();
+                    } else if (tag) {
+                        tag.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // Initialize the enhanced ant globe when the page is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new EnhancedAntGlobe();
+        });
+    </script>
+</body>
+</html>

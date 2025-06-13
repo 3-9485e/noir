@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noir</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="NOIR provides advanced satellite monitoring for any location worldwide with AI-powered surveillance and military-grade precision.">
+    <meta name="keywords" content="geospatial AI, satellite monitoring, location tracking, AI surveillance">
+    <meta name="author" content="NOIR Cyber">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Noir">
+    <meta property="og:description" content="Advanced satellite monitoring with AI-powered surveillance and military-grade precision.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://noircyber.com">
+    <meta property="og:image" content="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-logo-1-8cb304.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://imagedelivery.net/WChN5ZQChhT8DYNS_FK_sA/d314f29a-00f1-4bc3-019f-309ac75db400/public">
+    
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Fix for white bar on left edge - inline override */
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+            width: 100% !important;
+            position: relative !important;
+            left: 0 !important;
+            background-color: #000000 !important;
+        }
+        
+        /* FONT CONSISTENCY - Standardize all fonts across the page */
+        body, html {
+            font-family: var(--font-primary) !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-primary) !important;
+        }
+        
+        p, span, div, a, button, input, select, textarea {
+            font-family: var(--font-primary) !important;
+        }
+        
+        .nav-link, .cta-button, .explore-button {
+            font-family: var(--font-primary) !important;
+        }
+        
+        .hero-title, .feature-title, .feature-description {
+            font-family: var(--font-primary) !important;
+        }
+        
+        .tag, .ant, .interface-title, .analysis-title {
+            font-family: var(--font-primary) !important;
+        }
+        
+        .location-name, .detection-type, .analysis-label, .analysis-value {
+            font-family: var(--font-primary) !important;
+        }
+        
+        /* Exception: Keep monospace for technical data displays */
+        .kpi-value {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace !important;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%; /* 4:3 Aspect Ratio (3/4 = 0.75 = 75%) */
+            overflow: hidden;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            transform: none !important;
+        }
+        
+        .video-container:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .video-container::before {
+            display: none !important;
+        }
+        
+        .video-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none; /* disable hover over YouTube video */
+        }
+        
+        .cloudflare-video-container {
+            position: relative;
+            width: 100%;
+            height: 400px; /* Fixed height instead of padding */
+            margin: 0 !important; /* Removed top and bottom margins completely */
+            overflow: hidden;
+        }
+        
+        .cloudflare-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none; /* disable hover over Cloudflare video */
+        }
+        
+        /* Globe Footer Styles */
+        .globe-footer {
+            /* Use viewport units with negative margins to break out completely */
+            width: 100vw !important;
+            margin-left: calc(-50vw + 50%) !important;
+            margin-right: calc(-50vw + 50%) !important;
+            
+            /* Alternative positioning approach */
+            position: relative !important;
+            left: 50% !important;
+            right: 50% !important;
+            transform: translateX(-50%) !important;
+            
+            /* Ensure no constraints */
+            max-width: none !important;
+            min-width: 100vw !important;
+            
+            /* Remove all borders and padding */
+            border: none !important;
+            padding: 0 !important;
+            margin-top: 100px !important;
+            margin-bottom: 0 !important;
+            
+            /* Ensure proper display */
+            display: block !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            
+            /* Make this the final section with defined height */
+            height: 70vh !important;
+            min-height: 70vh !important;
+        }
+        
+        .globe-content {
+            position: relative;
+            width: 100%;
+            height: 70vh; /* Reduced from 100vh to create the cut-off effect */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            max-width: none !important; /* Override any max-width constraints */
+            margin: 0 auto;
+            overflow: hidden; /* Ensure globe cuts off cleanly */
+        }
+        
+        /* Override any parent container constraints for the globe section */
+        .globe-footer * {
+            max-width: none !important;
+        }
+        
+        .globe-hero-container {
+            text-align: center;
+            margin-bottom: 60px;
+            z-index: 12;
+            position: relative;
+            transform: translateY(-25vh); /* Move text much higher */
+        }
+        
+        .globe-hero-title {
+            font-size: 3rem;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 80px; /* Increased space between title and KPIs */
+            color: #ffffff;
+            letter-spacing: 0.02em;
+            font-family: var(--font-primary);
+            text-shadow: none;
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+            background-clip: unset;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-transform: none;
+            padding-left: 24px;
+            position: relative;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        
+        .globe-kpi-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            justify-content: center;
+            margin-bottom: 0;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.4);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+        
+        .kpi-item {
+            text-align: center;
+            position: relative;
+            padding: 40px 28px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            min-width: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .kpi-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .kpi-item:hover::before {
+            opacity: 1;
+        }
+        
+        .kpi-item:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .kpi-value {
+            display: block;
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: #ffffff;
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
+            text-shadow: none;
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+            background-clip: unset;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            line-height: 1;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .kpi-value::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            transition: width 0.4s ease;
+        }
+        
+        .kpi-item:hover .kpi-value::after {
+            width: 80%;
+        }
+        
+        .kpi-label {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-top: 16px;
+            font-weight: 400;
+            text-shadow: none;
+            font-family: var(--font-primary);
+            line-height: 1.3;
+            transition: color 0.3s ease;
+        }
+        
+        .kpi-item:hover .kpi-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .globe-container {
+            position: absolute !important;
+            bottom: -30vh !important; /* Hide bottom 30% of the globe for perfect half cut */
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 120vh !important; /* Larger globe for full screen effect */
+            height: 120vh !important; /* Larger globe for full screen effect */
+            overflow: visible !important;
+            border: none !important;
+            outline: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+        
+        #footer-globe {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            cursor: grab;
+            margin: 0 !important;
+            bottom: auto !important;
+            left: auto !important;
+            border: none;
+            outline: none;
+        }
+
+        #footer-globe.grabbing {
+            cursor: grabbing;
+        }
+
+        #footer-globe.grabbing {
+            cursor: grabbing;
+        }
+
+        .ant {
+            position: absolute;
+            width: 18px; /* Increased from 12px */
+            height: 18px; /* Increased from 12px */
+            background-image: url('https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-3-b12ade.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform-origin: center;
+            transition: transform 0.15s ease-out, filter 0.2s ease;
+            border: none;
+        }
+
+        .ant.hovered {
+            background-image: url('https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-2-5f5b49.png');
+            filter: drop-shadow(0 0 4px rgba(255, 59, 92, 0.7));
+        }
+
+        .ant.highlighted {
+            transform: scale(1.5) !important;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+            z-index: 1000 !important;
+        }
+
+        .tag {
+            position: absolute;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(25, 25, 35, 0.85), rgba(15, 15, 25, 0.95));
+            color: #ffffff;
+            border: 0;
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(45deg, #ff3b5c, #7600ff);
+            border-image-slice: 1;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            white-space: nowrap;
+            transform: translate(-50%, -100%);
+            margin-top: -15px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(255, 59, 92, 0.2),
+                inset 0 0 20px rgba(255, 59, 92, 0.05);
+            backdrop-filter: blur(8px) saturate(180%);
+            -webkit-backdrop-filter: blur(8px) saturate(180%);
+            text-transform: uppercase;
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%);
+            animation: borderFlow 8s infinite linear;
+            text-shadow: 0 0 5px rgba(255, 59, 92, 0.7);
+            z-index: 1001;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 59, 92, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(255, 59, 92, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 59, 92, 0); }
+        }
+
+        @keyframes borderFlow {
+            0% { border-image-source: linear-gradient(45deg, #ff3b5c, #7600ff); }
+            25% { border-image-source: linear-gradient(135deg, #ff3b5c, #00d8ff); }
+            50% { border-image-source: linear-gradient(225deg, #00d8ff, #00ff88); }
+            75% { border-image-source: linear-gradient(315deg, #00ff88, #ff3b5c); }
+            100% { border-image-source: linear-gradient(45deg, #ff3b5c, #7600ff); }
+        }
+
+        /* Dynamic KPI Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes countUp {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .kpi-value.counting {
+            animation: countUp 0.6s ease-out;
+        }
+        
+        /* Minimalistic pulse animation for active states */
+        @keyframes minimalPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.05);
+            }
+            50% {
+                box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02);
+            }
+        }
+        
+        .kpi-item.active {
+            animation: minimalPulse 2s infinite;
+        }
+        
+        /* Subtle data change indicator */
+        @keyframes dataChange {
+            0% {
+                background: rgba(255, 255, 255, 0.05);
+            }
+            50% {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            100% {
+                background: rgba(255, 255, 255, 0.05);
+            }
+        }
+        
+        .kpi-item.updating {
+            animation: dataChange 0.8s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .globe-footer {
+                width: 100vw !important;
+                margin-left: calc(-50vw + 50%) !important;
+                margin-right: calc(-50vw + 50%) !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            .globe-footer .globe-container {
+                width: 120vh !important;
+                height: 120vh !important;
+                bottom: -30vh !important;
+            }
+            
+            /* Anduril-style responsive text elements */
+            .globe-hero-title {
+                font-size: 2rem !important;
+                margin-bottom: 40px !important;
+                padding-left: 20px !important;
+                text-align: left !important;
+            }
+            
+            .globe-kpi-container {
+                grid-template-columns: 1fr !important;
+                gap: 1px !important;
+                max-width: 300px !important;
+            }
+            
+            .kpi-item {
+                padding: 24px 20px !important;
+                border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+                border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            
+            .kpi-value {
+                font-size: 2rem !important;
+            }
+            
+            .kpi-label {
+                font-size: 0.65rem !important;
+                letter-spacing: 0.12em !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .globe-footer {
+                width: 100vw !important;
+                margin-left: calc(-50vw + 50%) !important;
+                margin-right: calc(-50vw + 50%) !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            .globe-footer .globe-container {
+                width: 100vh !important;
+                height: 100vh !important;
+                bottom: -25vh !important;
+            }
+            
+            /* Anduril-style responsive text elements */
+            .globe-hero-title {
+                font-size: 1.6rem !important;
+                margin-bottom: 30px !important;
+                padding-left: 16px !important;
+                text-align: left !important;
+                line-height: 1.3 !important;
+            }
+            
+            .globe-kpi-container {
+                grid-template-columns: 1fr !important;
+                gap: 1px !important;
+                max-width: 250px !important;
+            }
+            
+            .kpi-item {
+                padding: 20px 16px !important;
+                border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+                border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            
+            .kpi-value {
+                font-size: 1.6rem !important;
+            }
+            
+            .kpi-label {
+                font-size: 0.6rem !important;
+                letter-spacing: 0.1em !important;
+            }
+        }
+        
+        /* FINAL FULL-WIDTH SOLUTION - Most aggressive approach */
+        .globe-footer {
+            /* Use viewport units with negative margins to break out completely */
+            width: 100vw !important;
+            margin-left: calc(-50vw + 50%) !important;
+            margin-right: calc(-50vw + 50%) !important;
+            
+            /* Alternative positioning approach */
+            position: relative !important;
+            left: 50% !important;
+            right: 50% !important;
+            transform: translateX(-50%) !important;
+            
+            /* Ensure no constraints */
+            max-width: none !important;
+            min-width: 100vw !important;
+            
+            /* Remove all borders and padding */
+            border: none !important;
+            padding: 0 !important;
+            margin-top: 100px !important;
+            margin-bottom: 0 !important;
+            
+            /* Ensure proper display */
+            display: block !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+        
+        /* Ensure globe content spans full width */
+        .globe-footer .globe-content {
+            width: 100% !important;
+            max-width: none !important;
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Make sure globe container is properly positioned for edge-to-edge effect */
+        .globe-footer .globe-container {
+            width: 150vh !important; /* Even larger for true edge coverage */
+            height: 150vh !important;
+            bottom: -40vh !important; /* Hide more of bottom for better effect */
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            position: absolute !important;
+            border: none !important;
+            outline: none !important;
+        }
+        
+        /* Remove padding between hero and features section for tighter video placement */
+        .features {
+            padding-top: 20px !important; /* Reduced from var(--spacing-4xl) which is likely 96px */
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-logo-1-8cb304.png" alt="NOIR" class="logo-img logo-main">
+                    <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-2-5f5b49.png" alt="NOIR" class="logo-img logo-small">
+                </div>
+                <div class="waitlist-progress-button">
+                    <span class="progress-text">First 100 people on the waitlist get 1 year of Noir free — 68/100</span>
+                </div>
+                <!-- Burger Menu Button -->
+                <button class="burger-menu" id="burgerMenu" onclick="toggleMobileMenu()">
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                    <span class="burger-line"></span>
+                </button>
+                
+                <!-- Navigation -->
+                <nav class="nav" id="nav">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfcKFqCGRCbyQlJLU_7UCKbp9YGjpGwlSYMS2NLwItaiAm2YA/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        Request Early Access
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>                                                                                                             
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <h1 class="hero-title">
+                        AI infrastructure to understand Earth continuously 
+                    </h1>
+                    <button id="discover-button" class="explore-button">
+                        Discover What's Possible
+                        <span class="arrow">🡥</span>
+                    </button>
+                </div>
+                <div class="hero-right">
+                    <div class="video-container">
+                        <iframe
+                            loading="lazy"
+                            src="https://www.youtube.com/embed/0nqBMxI1xts?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=0nqBMxI1xts&vq=hd2160"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            allowfullscreen
+                            class="video-iframe">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How it Works</h2>
+            <div class="video-container youtube-container">
+                <iframe 
+                    src="https://www.youtube.com/embed/euaCv8dUtsA?controls=1&autoplay=0&rel=0&modestbranding=1" 
+                    loading="lazy"
+                    allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" 
+                    allowfullscreen="true"
+                    frameborder="0"
+                    title="How NOIR CYBER Works">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Benefits</h2>
+            <!-- Cloudflare Video Section -->
+            <div id="cloudflare-video-container" style="position: relative; height: 400px; width: 100%;">
+              <iframe
+                id="cloudflare-video"
+                src="https://customer-45gepjb4e3vmpvcw.cloudflarestream.com/bc4b4e8208da3504af33c88998993c8c/iframe?muted=true&preload=true&loop=true&autoplay=false&poster=https%3A%2F%2Fcustomer-45gepjb4e3vmpvcw.cloudflarestream.com%2Fbc4b4e8208da3504af33c88998993c8c%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&controls=false"
+                loading="lazy"
+                style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                allowfullscreen="true"
+              ></iframe>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1: Watch Places -->
+                <div class="feature-card" data-feature="watch">
+                    <div class="feature-content-left">
+                        <div class="feature-icon-badge">
+                            <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-10f93a.gif" alt="Watch places" class="feature-badge-img">
+                        </div>
+                        <h3 class="feature-title">Monitor Zones</h3>
+                        <p class="feature-description">
+                            Select an area of interest for analysis — infrastructure, terrain, emissions, activity.
+                        </p>
+                        <div class="feature-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">Monitoring</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Global</span>
+                                <span class="stat-label">Coverage</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="floating-interface">
+                            <div class="interface-header">
+                                <div class="interface-title">Location Monitor</div>
+                                <div class="interface-status active">● Active</div>
+                            </div>
+                            <div class="interface-content">
+                                <div class="location-item">
+                                    <div class="location-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                            <circle cx="12" cy="10" r="3"/>
+                                        </svg>
+                                    </div>
+                                    <div class="location-info">
+                                        <div class="location-name">Port of Los Angeles</div>
+                                        <div class="location-coords">33.7361°N, 118.2639°W</div>
+                                    </div>
+                                    <div class="location-status">Monitoring</div>
+                                </div>
+                                <div class="location-item">
+                                    <div class="location-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                            <line x1="8" y1="21" x2="16" y2="21"/>
+                                            <line x1="12" y1="17" x2="12" y2="21"/>
+                                        </svg>
+                                    </div>
+                                    <div class="location-info">
+                                        <div class="location-name">Construction Site Delta</div>
+                                        <div class="location-coords">40.7128°N, 74.0060°W</div>
+                                    </div>
+                                    <div class="location-status">Changes Detected</div>
+                                </div>
+                                <div class="location-item">
+                                    <div class="location-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M10 2v20M14 2v20M4 7h16M4 17h16"/>
+                                        </svg>
+                                    </div>
+                                    <div class="location-info">
+                                        <div class="location-name">Amazon Forest Zone 7</div>
+                                        <div class="location-coords">3.4653°S, 62.2159°W</div>
+                                    </div>
+                                    <div class="location-status">Stable</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Detect Critical Shifts -->
+                <div class="feature-card" data-feature="detect">
+                    <div class="feature-content-left">
+                        <div class="feature-icon-badge">
+                            <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-1-1-7455c0.png" alt="Detect Critical Shifts" class="feature-badge-img">
+                        </div>
+                        <h3 class="feature-title">Configure Analysis</h3>
+                        <p class="feature-description">
+                            Choose the parameters: imagery source, resolution, frequency, indicators to track.
+                        </p>
+                        <div class="feature-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">AI</span>
+                                <span class="stat-label"> Powered</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Real-time</span>
+                                <span class="stat-label">Detection</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="floating-interface">
+                            <div class="interface-header">
+                                <div class="interface-title">Change Detection</div>
+                                <div class="interface-status detecting">● Analyzing</div>
+                            </div>
+                            <div class="interface-content">
+                                <div class="detection-item">
+                                    <div class="detection-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M3 21h18"/>
+                                            <path d="M5 21V7l8-4v18"/>
+                                            <path d="M19 21V11l-6-4"/>
+                                        </svg>
+                                    </div>
+                                    <div class="detection-info">
+                                        <div class="detection-type">New Structure</div>
+                                        <div class="detection-confidence">Confidence: 94%</div>
+                                    </div>
+                                    <div class="detection-time">2 hours ago</div>
+                                </div>
+                                <div class="detection-item">
+                                    <div class="detection-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2c1.3 0 1.9.5 2.5 1"/>
+                                            <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/>
+                                            <path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/>
+                                            <path d="M12 10v4"/>
+                                            <path d="M12 2v3"/>
+                                        </svg>
+                                    </div>
+                                    <div class="detection-info">
+                                        <div class="detection-type">Vessel Movement</div>
+                                        <div class="detection-confidence">Confidence: 98%</div>
+                                    </div>
+                                    <div class="detection-time">15 min ago</div>
+                                </div>
+                                <div class="detection-item processing">
+                                    <div class="detection-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                                        </svg>
+                                    </div>
+                                    <div class="detection-info">
+                                        <div class="detection-type">Processing new imagery...</div>
+                                        <div class="detection-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Know what, why, and how -->
+                <div class="feature-card" data-feature="analyze">
+                    <div class="feature-content-left">
+                        <div class="feature-icon-badge">
+                            <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/3187265/page/w400-ant-2-10f93a.gif" alt="Know what, why, and how" class="feature-badge-img">
+                        </div>
+                        <h3 class="feature-title">Receive Insights</h3>
+                        <p class="feature-description">
+                            AI agents process imagery, detect patterns, and return structured outputs tailored to the analytical objective.
+                        </p>
+                        <div class="feature-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">Deep</span>
+                                <span class="stat-label">Analysis</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Pattern</span>
+                                <span class="stat-label">Recognition</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-visual">
+                        <div class="floating-interface">
+                            <div class="interface-header">
+                                <div class="interface-title">Analysis Report</div>
+                                <div class="interface-status complete">● Complete</div>
+                            </div>
+                            <div class="interface-content">
+                                <div class="analysis-section">
+                                    <div class="analysis-title">Change Summary</div>
+                                    <div class="analysis-item">
+                                        <span class="analysis-label">Type:</span>
+                                        <span class="analysis-value">Infrastructure Development</span>
+                                    </div>
+                                    <div class="analysis-item">
+                                        <span class="analysis-label">Impact:</span>
+                                        <span class="analysis-value">High</span>
+                                    </div>
+                                    <div class="analysis-item">
+                                        <span class="analysis-label">Timeline:</span>
+                                        <span class="analysis-value">6 months</span>
+                                    </div>
+                                </div>
+                                <div class="analysis-insights">
+                                    <div class="insight-item">
+                                        <span class="insight-circle green"></span>Construction pattern indicates commercial development
+                                    </div>
+                                    <div class="insight-item">
+                                        <span class="insight-circle green"></span>Consistent with regional growth trends
+                                    </div>
+                                    <div class="insight-item">
+                                        <span class="insight-circle red"></span>Environmental impact assessment recommended
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Globe Footer Section -->
+    <section class="globe-footer">
+        <div class="globe-content">
+            <div class="globe-hero-container">
+                <h1 class="globe-hero-title">
+                    Building the operating layer for geospatial AI
+                </h1>
+            </div>
+            <div class="globe-container">
+                <div id="footer-globe"></div>
+            </div>
+        </div>
+    </section>
+    
+    <script src="script.js"></script>
+    <script>
+        /**
+         * Enhanced Ant Globe Visualization for Footer
+         * An interactive 3D globe with ant elements
+         */
+        class EnhancedAntGlobe {
+            constructor(globeId = 'footer-globe') {
+                // Core properties
+                this.globe = document.getElementById(globeId);
+                if (!this.globe) {
+                    console.warn(`Globe element with id '${globeId}' not found`);
+                    return;
+                }
+                
+                this.ants = [];
+                this.highlightedAnts = [];
+                this.allPoints = [];
+                
+                // Configuration
+                this.config = {
+                    radius: 400, // Larger radius for bigger globe
+                    centerX: 0, // Will be adjusted in handleResize
+                    centerY: 0, // Will be adjusted in handleResize
+                    rotationSpeed: 0.15, // Faster rotation speed
+                    autoRotate: true,
+                    highlightCount: 6, // Fewer highlighted ants for better performance
+                    latDensity: 10, // Adjusted for larger globe
+                    lonDensity: 10, // Adjusted for larger globe
+                    mouseRadius: 80, // Larger radius for bigger ants
+                    dragSensitivity: 0.4, // More responsive
+                    antSize: 18 // Increased ant size
+                };
+                
+                // State tracking
+                this.state = {
+                    rotation: { x: 0, y: 0 },
+                    autoRotation: 0,
+                    isDragging: false,
+                    lastMousePos: { x: 0, y: 0 },
+                    mousePos: { x: -1000, y: -1000 }
+                };
+                
+                // Custom tag messages
+                this.tagMessages = [
+                    'change detected',
+                    'area surveyed',
+                    'terrain mapped',
+                    'coordinates fixed',
+                    'region analyzed',
+                    'data imported',
+                    'layers updated',
+                    'signal processed',
+                    'zone identified',
+                    'pattern recognized'
+                ];
+                
+                // Initialize components
+                this.setupEventListeners();
+                this.initializeGlobe();
+            }
+            
+            setupEventListeners() {
+                // Mouse move for hover effects
+                document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+                
+                // Mouse down for dragging
+                this.globe.addEventListener('mousedown', this.handleMouseDown.bind(this));
+                document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+                document.addEventListener('mouseleave', this.handleMouseUp.bind(this));
+                
+                // Touch events for mobile
+                this.globe.addEventListener('touchstart', this.handleTouchStart.bind(this));
+                document.addEventListener('touchmove', this.handleTouchMove.bind(this));
+                document.addEventListener('touchend', this.handleTouchEnd.bind(this));
+                
+                // Window resize
+                window.addEventListener('resize', this.handleResize.bind(this));
+            }
+            
+            handleResize() {
+                // Update the center position based on current globe size
+                const rect = this.globe.getBoundingClientRect();
+                this.config.centerX = rect.width / 2;
+                this.config.centerY = rect.height / 2;
+                
+                // Set radius based on the container size for full-width effect
+                this.config.radius = Math.min(rect.width, rect.height) / 2.5;
+            }
+            
+            handleMouseMove(event) {
+                // Throttle mouse move events for better performance
+                if (!this.lastMouseMoveTime) this.lastMouseMoveTime = 0;
+                const now = Date.now();
+                if (now - this.lastMouseMoveTime < 16) return; // ~60fps limit
+                this.lastMouseMoveTime = now;
+                
+                // Get position relative to the globe element
+                const rect = this.globe.getBoundingClientRect();
+                this.state.mousePos.x = event.clientX - rect.left;
+                this.state.mousePos.y = event.clientY - rect.top;
+                
+                // Dragging functionality disabled - only hover effects remain
+            }
+            
+            handleMouseDown(event) {
+                // Orbital controls disabled - no dragging allowed
+            }
+            
+            handleMouseUp() {
+                // Orbital controls disabled - no dragging allowed
+            }
+            
+            handleTouchStart(event) {
+                if (event.touches.length === 1) {
+                    event.preventDefault();
+                    
+                    // Update mouse position for hover effects only
+                    const rect = this.globe.getBoundingClientRect();
+                    this.state.mousePos.x = event.touches[0].clientX - rect.left;
+                    this.state.mousePos.y = event.touches[0].clientY - rect.top;
+                    
+                    // No dragging functionality
+                }
+            }
+            
+            handleTouchMove(event) {
+                if (event.touches.length === 1) {
+                    event.preventDefault();
+                    
+                    // Update mouse position for hover effects only
+                    const rect = this.globe.getBoundingClientRect();
+                    this.state.mousePos.x = event.touches[0].clientX - rect.left;
+                    this.state.mousePos.y = event.touches[0].clientY - rect.top;
+                    
+                    // No dragging functionality
+                }
+            }
+            
+            handleTouchEnd() {
+                // Orbital controls disabled - no dragging allowed
+            }
+            
+            initializeGlobe() {
+                this.createSpherePoints();
+                this.handleResize();
+                this.highlightRandomAnts();
+                this.animate();
+            }
+            
+            createSpherePoints() {
+                // Create a filled sphere using spherical coordinates with improved distribution
+                const { latDensity, lonDensity } = this.config;
+                
+                for (let lat = -90; lat <= 90; lat += latDensity) {
+                    // Adjust longitude step based on latitude to maintain even distribution
+                    const latRad = (lat * Math.PI) / 180;
+                    const circumference = Math.cos(latRad);
+                    // Adjust points density at poles (less aggressive for better performance)
+                    const adjustedLonStep = circumference > 0.2 ? lonDensity / circumference : lonDensity * 2;
+                    
+                    for (let lon = -180; lon < 180; lon += adjustedLonStep) {
+                        // Reduced randomness for better performance
+                        const jitterLat = lat + (Math.random() - 0.5) * (latDensity * 0.2);
+                        const jitterLon = lon + (Math.random() - 0.5) * (adjustedLonStep * 0.2);
+                        
+                        this.allPoints.push({
+                            lat: jitterLat,
+                            lon: jitterLon
+                        });
+                    }
+                }
+                
+                // Create ant elements with optimized setup
+                this.allPoints.forEach((point, index) => {
+                    const ant = document.createElement('div');
+                    ant.className = 'ant';
+                    ant.dataset.lat = point.lat.toString();
+                    ant.dataset.lon = point.lon.toString();
+                    ant.dataset.index = index.toString();
+                    
+                    // Pre-set styles for better performance
+                    ant.style.position = 'absolute';
+                    ant.style.width = `${this.config.antSize}px`;
+                    ant.style.height = `${this.config.antSize}px`;
+                    ant.style.zIndex = '1';
+                    ant.style.display = 'none'; // Start hidden
+                    
+                    // Fixed rotation instead of random for performance
+                    ant.style.transform = `rotate(${(index * 137.5) % 360}deg)`;
+                    
+                    this.globe.appendChild(ant);
+                    this.ants.push(ant);
+                });
+                
+                console.log(`Created ${this.ants.length} ants`);
+            }
+            
+            // Convert lat/lon to 3D sphere coordinates with tilt
+            latLonTo3D(lat, lon) {
+                const { radius } = this.config;
+                const { rotation, autoRotation } = this.state;
+                
+                // Apply both manual rotation and auto rotation
+                const rotatedLon = lon + autoRotation + rotation.y;
+                
+                // Convert to radians
+                const latRad = (lat * Math.PI) / 180;
+                const lonRad = (rotatedLon * Math.PI) / 180;
+                
+                // Apply tilt from x rotation
+                const tiltRad = (rotation.x * Math.PI) / 180;
+                
+                // Calculate 3D coordinates with tilt
+                let x = radius * Math.cos(latRad) * Math.cos(lonRad);
+                let y = radius * Math.sin(latRad);
+                let z = radius * Math.cos(latRad) * Math.sin(lonRad);
+                
+                // Apply tilt transformation (rotate around X axis)
+                const newY = y * Math.cos(tiltRad) - z * Math.sin(tiltRad);
+                const newZ = y * Math.sin(tiltRad) + z * Math.cos(tiltRad);
+                
+                return { x, y: newY, z: newZ };
+            }
+            
+            // Project 3D to 2D with depth effects
+            project3DTo2D(x, y, z) {
+                const { centerX, centerY } = this.config;
+                
+                const screenX = centerX + x;
+                const screenY = centerY - y;
+                
+                // Only show ants on the visible hemisphere (with smoother transition)
+                const visible = z > -100;
+                
+                // Create depth effects with smoother gradient
+                const depth = (z + this.config.radius) / (2 * this.config.radius);
+                const brightness = Math.max(0.2, depth);
+                const scale = 0.5 + (depth * 0.6); // Smaller scale range for better visibility
+                
+                return { screenX, screenY, visible, brightness, scale, depth };
+            }
+            
+            updateAnts() {
+                // Performance optimization: only update visible ants
+                const visibleAnts = [];
+                
+                this.ants.forEach(ant => {
+                    const lat = parseFloat(ant.dataset.lat);
+                    const lon = parseFloat(ant.dataset.lon);
+                    
+                    const pos3D = this.latLonTo3D(lat, lon);
+                    const pos2D = this.project3DTo2D(pos3D.x, pos3D.y, pos3D.z);
+                    
+                    if (pos2D.visible) {
+                        visibleAnts.push({ ant, pos2D, pos3D });
+                        
+                        // Position the ant
+                        ant.style.left = `${pos2D.screenX - this.config.antSize / 2}px`;
+                        ant.style.top = `${pos2D.screenY - this.config.antSize / 2}px`;
+                        ant.style.opacity = pos2D.brightness.toString();
+                        ant.style.transform = `scale(${pos2D.scale})`;
+                        ant.style.zIndex = Math.round(pos2D.depth * 1000).toString();
+                        ant.style.display = 'block';
+                    } else {
+                        ant.style.display = 'none';
+                        // Reset any hover effects for hidden ants
+                        ant.classList.remove('hovered');
+                        ant.style.filter = 'none';
+                    }
+                });
+                
+                // Only do hover calculations for visible ants (performance boost)
+                if (this.state.mousePos.x > -1000) { // Only if mouse is active
+                    let anyAntHovered = false;
+                    
+                    visibleAnts.forEach(({ ant, pos2D }) => {
+                        if (!ant.classList.contains('highlighted')) {
+                            const dx = pos2D.screenX - this.state.mousePos.x;
+                            const dy = pos2D.screenY - this.state.mousePos.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < this.config.mouseRadius) {
+                                const hoverEffect = 1 - (distance / this.config.mouseRadius);
+                                const hoverScale = 1 + (hoverEffect * 0.5); // Reduced hover effect for performance
+                                
+                                ant.style.transform = `scale(${pos2D.scale * hoverScale})`;
+                                ant.style.filter = 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.5))';
+                                ant.classList.add('hovered');
+                                anyAntHovered = true;
+                            } else {
+                                ant.style.transform = `scale(${pos2D.scale})`;
+                                ant.style.filter = 'none';
+                                ant.classList.remove('hovered');
+                            }
+                        }
+                    });
+                }
+            }
+            
+            animate() {
+                // Performance optimization: skip frames when not needed
+                this.frameCount = (this.frameCount || 0) + 1;
+                
+                // Update auto rotation if enabled
+                if (this.config.autoRotate && !this.state.isDragging) {
+                    this.state.autoRotation += this.config.rotationSpeed;
+                    if (this.state.autoRotation >= 360) this.state.autoRotation -= 360;
+                }
+                
+                // Update all ants every frame for smooth movement
+                this.updateAnts();
+                
+                // Update tag positions less frequently for better performance
+                if (this.highlightedAnts.length > 0 && this.frameCount % 2 === 0) {
+                    this.updateTagPositions();
+                }
+                
+                requestAnimationFrame(this.animate.bind(this));
+            }
+            
+            highlightRandomAnts() {
+                // Clear previous highlights
+                this.highlightedAnts.forEach(ant => {
+                    ant.classList.remove('highlighted');
+                    const tagId = ant.dataset.tagId;
+                    const tag = document.getElementById(tagId);
+                    if (tag) tag.remove();
+                });
+                
+                this.highlightedAnts = [];
+                
+                // Shuffle messages for variety
+                const shuffledMessages = [...this.tagMessages].sort(() => Math.random() - 0.5);
+                
+                // Select random ants
+                for (let i = 0; i < this.config.highlightCount; i++) {
+                    // Try to find a visible ant to highlight
+                    let attempts = 0;
+                    let ant;
+                    
+                    do {
+                        const randomIndex = Math.floor(Math.random() * this.ants.length);
+                        ant = this.ants[randomIndex];
+                        attempts++;
+                        
+                        // Skip if already selected or not visible
+                        if (this.highlightedAnts.includes(ant) || ant.style.display === 'none') {
+                            ant = null;
+                        }
+                    } while (!ant && attempts < 50);
+                    
+                    // If we couldn't find a suitable ant after 50 attempts, skip this highlight
+                    if (!ant) continue;
+                    
+                    ant.classList.add('highlighted');
+                    
+                    // Create a tag for the ant
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `<span>${shuffledMessages[i % shuffledMessages.length]}</span>`;
+                    const tagId = 'ant-tag-' + Date.now() + '-' + i;
+                    tag.id = tagId;
+                    ant.dataset.tagId = tagId;
+                    this.globe.appendChild(tag);
+                    
+                    this.highlightedAnts.push(ant);
+                }
+            }
+            
+            updateTagPositions() {
+                this.highlightedAnts.forEach(ant => {
+                    const lat = parseFloat(ant.dataset.lat);
+                    const lon = parseFloat(ant.dataset.lon);
+                    
+                    const pos3D = this.latLonTo3D(lat, lon);
+                    const pos2D = this.project3DTo2D(pos3D.x, pos3D.y, pos3D.z);
+                    
+                    const tag = document.getElementById(ant.dataset.tagId);
+                    if (tag && pos2D.visible) {
+                        tag.style.left = `${pos2D.screenX}px`;
+                        tag.style.top = `${pos2D.screenY}px`;
+                        tag.style.display = 'block';
+                        
+                        // Ensure tag is on top of ant
+                        tag.style.zIndex = (parseInt(ant.style.zIndex || '0') + 1).toString();
+                    } else if (tag) {
+                        tag.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        // Initialize the enhanced ant globe when the page is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Small delay to ensure the waitlist section is rendered
+            setTimeout(() => {
+                new EnhancedAntGlobe('footer-globe');
+            }, 100);
+            
+            // Bottom waitlist form logic
+            const bottomWaitlistForm = document.getElementById('bottom-waitlist-form');
+            const waitlistCloseBtn = document.getElementById('waitlist-close-btn');
+            const waitlistForm = document.getElementById('waitlist-form');
+            let waitlistFormDismissed = false;
+            
+            // Show waitlist form when user reaches near the end of the page
+            function checkScrollPosition() {
+                if (waitlistFormDismissed) return;
+                
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                const triggerPoint = documentHeight - 200; // Show when 200px from bottom
+                
+                if (scrollPosition >= triggerPoint) {
+                    bottomWaitlistForm.classList.add('visible');
+                } else {
+                    bottomWaitlistForm.classList.remove('visible');
+                }
+            }
+            
+            // Close button functionality
+            waitlistCloseBtn.addEventListener('click', () => {
+                bottomWaitlistForm.classList.remove('visible');
+                waitlistFormDismissed = true;
+            });
+            
+            // Throttled scroll listener
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(checkScrollPosition, 50);
+            });
+            
+            // Initial check
+            checkScrollPosition();
+            
+            // Scroll-triggered video playback for Cloudflare video
+            const cloudflareVideo = document.getElementById('cloudflare-video');
+            const cloudflareContainer = document.getElementById('cloudflare-video-container');
+            
+            if (cloudflareVideo && cloudflareContainer) {
+                let hasPlayed = false;
+                
+                const videoObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting && !hasPlayed) {
+                            // Trigger autoplay by updating the src with autoplay=true
+                            const currentSrc = cloudflareVideo.src;
+                            const newSrc = currentSrc.replace('autoplay=false', 'autoplay=true');
+                            cloudflareVideo.src = newSrc;
+                            hasPlayed = true;
+                            
+                            // Stop observing once video starts playing
+                            videoObserver.unobserve(cloudflareContainer);
+                        }
+                    });
+                }, {
+                    threshold: 0.5, // Trigger when 50% of the video is visible
+                    rootMargin: '0px 0px -100px 0px' // Start slightly before the video comes into view
+                });
+                
+                videoObserver.observe(cloudflareContainer);
+            }
+            
+            // Add scroll functionality for the "Discover What's Possible" button
+            const discoverButton = document.getElementById('discover-button');
+            if (discoverButton) {
+                discoverButton.addEventListener('click', () => {
+                    const cloudflareContainer = document.getElementById('cloudflare-video-container');
+                    if (cloudflareContainer) {
+                        // Scroll to the Cloudflare video with smooth animation
+                        cloudflareContainer.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        
+                        // Auto-play the video when scrolled to it
+                        const cloudflareVideo = document.getElementById('cloudflare-video');
+                        if (cloudflareVideo) {
+                            setTimeout(() => {
+                                // Update src to force autoplay by adding autoplay=true parameter
+                                let videoSrc = cloudflareVideo.src;
+                                if (videoSrc.includes('autoplay=false')) {
+                                    videoSrc = videoSrc.replace('autoplay=false', 'autoplay=true');
+                                    cloudflareVideo.src = videoSrc;
+                                }
+                            }, 1000); // Small delay to ensure scroll completes first
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Bottom Waitlist Form - appears on scroll -->
+    <div class="bottom-waitlist-form" id="bottom-waitlist-form">
+        <div class="waitlist-form-header">
+            <h3 class="waitlist-form-title">Request Early Access</h3>
+            <p class="waitlist-form-subtitle">First 100 people get 1 year free — 68/100</p>
+            <button class="waitlist-close-btn" id="waitlist-close-btn">×</button>
+        </div>
+        <div class="waitlist-form-content" id="waitlist-form">
+            <div class="form-row centered-button-container">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfcKFqCGRCbyQlJLU_7UCKbp9YGjpGwlSYMS2NLwItaiAm2YA/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" class="waitlist-submit-btn">Join Waitlist</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom KPIs -->
+    <div class="bottom-kpi-container">
+        <div class="kpi-item">
+            <span class="kpi-value">
+                <span class="kpi-indicator" id="ants-indicator">●</span>
+                <span class="kpi-number">684</span>
+            </span>
+            <span class="kpi-label">ants crawling</span>
+        </div>
+        <div class="kpi-item">
+            <span class="kpi-value">
+                <span class="kpi-indicator" id="coverage-indicator">●</span>
+                <span class="kpi-number">15%</span>
+            </span>
+            <span class="kpi-label">globe coverage</span>
+        </div>
+        <div class="kpi-item">
+            <span class="kpi-value">
+                <span class="kpi-number">1.6 TB</span>
+            </span>
+            <span class="kpi-label">imagery processed</span>
+        </div>
+    </div>
+    
+    <!-- Bottom Gradient Mask -->
+    <div class="bottom-gradient-mask"></div>
+ 
+</body>
+</html>
