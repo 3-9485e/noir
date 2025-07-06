@@ -364,17 +364,24 @@ html::-webkit-scrollbar {
     height: 100%;
     border: none;
     outline: none;
+    object-fit: cover;
+    /* Removed pointer-events: none to allow YouTube controls to work */
+    /* Removed user-select: none to allow text selection in controls */
+}
+
+/* Only disable interactions for non-YouTube videos */
+.video-container:not(.youtube-video-wrapper) .video-iframe,
+.video-container:not(.youtube-video-wrapper) .video-element {
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    object-fit: cover;
 }
 
 .video-container:hover,
-.video-iframe:hover,
-.video-element:hover {
+.video-container:not(.youtube-video-wrapper) .video-iframe:hover,
+.video-container:not(.youtube-video-wrapper) .video-element:hover {
     cursor: default;
     pointer-events: none;
 }
@@ -1479,14 +1486,26 @@ html::-webkit-scrollbar {
         padding: 0 15px;
         display: block !important;
     }
-    
-    .youtube-container {
+      .youtube-container {
         margin: 20px auto;
-        padding-bottom: 62%; /* Slightly more padding for mobile to ensure controls are visible */
+        padding-bottom: 56.25%; /* Fixed 16:9 aspect ratio for mobile */
         position: relative !important;
         display: block !important;
         width: 100% !important;
-        overflow: visible !important;
+        overflow: hidden !important; /* Prevent weird overflow */
+    }
+
+    /* Updated mobile styles for new wrapper */
+    .youtube-video-wrapper {
+        margin: 20px auto;
+        padding-bottom: 56.25%; /* Maintain proper aspect ratio */
+        border-radius: 4px;
+    }
+
+    .youtube-video-wrapper iframe {
+        pointer-events: auto !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
     }
     
     .hero-subtitle {
@@ -1685,14 +1704,13 @@ html::-webkit-scrollbar {
         padding: 0 !important;
     }
     
-    /* Ensure YouTube container maintains its padding and visibility */
-    .youtube-container {
-        padding-bottom: 62% !important;
-        height: 0 !important;
+    /* Ensure YouTube container maintains its padding and visibility */    .youtube-container {
         margin: 20px auto !important;
+        padding-bottom: 56.25% !important; /* Fixed 16:9 aspect ratio */
+        height: 0 !important;
+        max-width: 100% !important;
         display: block !important;
         visibility: visible !important;
-        max-width: 100% !important;
     }
     
     .youtube-container iframe {
@@ -1702,6 +1720,22 @@ html::-webkit-scrollbar {
         display: block !important;
         visibility: visible !important;
         z-index: 1;
+        pointer-events: auto !important; /* Enable touch interactions */
+    }
+
+    /* Updated mobile styles for new wrapper */
+    .youtube-video-wrapper {
+        margin: 20px auto !important;
+        padding-bottom: 56.25% !important; /* Maintain 16:9 aspect ratio */
+        max-width: 100% !important;
+        border-radius: 4px; /* Smaller radius on mobile */
+    }
+
+    .youtube-video-wrapper iframe {
+        pointer-events: auto !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        border-radius: 4px;
     }
 }
 
@@ -1893,6 +1927,10 @@ html::-webkit-scrollbar {
 
 .centered-button-container .waitlist-submit-btn {
     min-width: 200px;
+    text-decoration: none !important; /* Ensure no underline */
+    display: inline-flex !important; /* Override any conflicting display */
+    align-items: center;
+    justify-content: center;
 }
 
 .waitlist-input,
@@ -1948,11 +1986,17 @@ html::-webkit-scrollbar {
     white-space: nowrap;
     letter-spacing: 0.02em;
     margin: 10px auto;
+    text-decoration: none !important; /* Remove any underlines */
+    display: inline-flex; /* Better centering control */
+    align-items: center; /* Vertically center text */
+    justify-content: center; /* Horizontally center text */
+    text-align: center; /* Center text content */
 }
 
 .waitlist-submit-btn:hover {
     background: rgba(255, 255, 255, 0.9);
     transform: translateY(-1px);
+    text-decoration: none !important; /* Ensure no underline on hover */
 }
 
 .waitlist-submit-btn:active {
@@ -2037,6 +2081,15 @@ html::-webkit-scrollbar {
 .waitlist-submit-btn {
     padding: 14px 16px; /* Larger touch targets */
     font-size: 16px; /* Prevents zoom on iOS */
+    text-decoration: none !important; /* Ensure no underline on mobile */
+}
+
+/* Additional mobile styles for the button */
+.waitlist-submit-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 /* Bottom waitlist form - Phone specific */
@@ -2202,17 +2255,67 @@ html {
     z-index: 1; /* Ensure controls are clickable */
 }
 
-.cta-button, .waitlist-submit-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    text-align: center;
+/* New improved YouTube video wrapper */
+.youtube-video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    background: #000;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-a.cta-button, a.waitlist-submit-btn {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.youtube-video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    pointer-events: auto !important; /* Enable interactions */
+    user-select: auto !important; /* Allow text selection in controls */
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    border-radius: 8px;
+}
+
+/* Additional responsive improvements for YouTube video */
+@media (max-width: 768px) {
+    .youtube-video-wrapper {
+        margin: 15px auto !important;
+        border-radius: 4px;
+    }
+    
+    .how-it-works .section-title {
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .youtube-video-wrapper {
+        margin: 10px auto !important;
+        border-radius: 2px;
+    }
+    
+    .how-it-works {
+        padding: 40px 0 20px;
+    }
+    
+    .how-it-works .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+}
+
+/* Ensure YouTube controls are always accessible */
+.youtube-video-wrapper iframe {
+    touch-action: auto !important;
+    -webkit-touch-callout: default !important;
 }
