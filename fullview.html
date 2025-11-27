@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Euro-Atlantic Defence Intelligence / Full Network</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { 
+        background: #000000; 
+        overflow: hidden; 
+        font-family: Helvetica, Arial, sans-serif;
+      }
+      #container {
+        position: relative; width: 100vw; height: 100vh;
+      }
+      
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #000000;
+        border-bottom: 1px solid #333;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+      }
+      nav h1 { font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+      nav .links { display: flex; gap: 20px; }
+      nav a { 
+        color: #666; 
+        text-decoration: none; 
+        font-size: 12px; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        transition: color 0.2s;
+        padding: 6px 12px;
+        border: 1px solid transparent;
+      }
+      nav a:hover { color: #fff; border-color: #444; }
+      nav a.active { color: #fff; background: #fff; color: #000; }
+
+      /* Legend */
+      #legend {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 100;
+        background: #000;
+        border: 1px solid #333;
+        padding: 15px 20px;
+        font-size: 11px;
+        line-height: 2;
+      }
+      #legend .item { display: flex; align-items: center; gap: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+      #legend .dot { width: 8px; height: 8px; }
+      #legend .national .dot { background: #4fc3f7; }
+      #legend .nato .dot { background: #ef5350; }
+      #legend .eu .dot { background: #66bb6a; }
+
+      #3d-graph {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <nav>
+        <h1>Defence Intelligence Architecture</h1>
+        <div class="links">
+          <a href="graph.html">Simplified</a>
+          <a href="fullview.html" class="active">Full Network</a>
+          <a href="hierarchy.html">Hierarchy</a>
+        </div>
+      </nav>
+      <div id="legend">
+        <div class="item national"><span class="dot"></span>National</div>
+        <div class="item nato"><span class="dot"></span>NATO</div>
+        <div class="item eu"><span class="dot"></span>EU</div>
+      </div>
+      <div id="3d-graph"></div>
+    </div>
+
+    <!-- Core Libraries -->
+    <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph@1.73.3/dist/3d-force-graph.min.js"></script>
+    <script src="https://unpkg.com/three-spritetext@1.8.2/dist/three-spritetext.min.js"></script>
+
+    <script>
+      const graphData = {
+        nodes: [
+          // National Defence Intelligence (Foundation Layer)
+          { id: "DIA",      name: "US Defence Intelligence Agency (DIA)", group: 1, val: 30, category: "National" },
+          { id: "UKDI",     name: "UK Defence Intelligence (DI)",        group: 1, val: 25, category: "National" },
+          { id: "DRM",      name: "France DRM/DMI",                      group: 1, val: 22, category: "National" },
+          { id: "MIVD",     name: "Netherlands MIVD",                    group: 1, val: 18, category: "National" },
+          { id: "BNDmil",   name: "Germany BND (Mil Branch)",            group: 1, val: 20, category: "National" },
+          { id: "SKW",      name: "Poland SKW",                          group: 1, val: 16, category: "National" },
+          { id: "MUST",     name: "Sweden MUST",                         group: 1, val: 15, category: "National" },
+          { id: "AMT",      name: "Denmark DDT&S",                       group: 1, val: 14, category: "National" },
+          { id: "IDFDI",    name: "Israel IDF DI",                       group: 1, val: 24, category: "National" },
+          { id: "AISI",     name: "Italy AISI",                          group: 1, val: 17, category: "National" },
+          { id: "OtherNat", name: "Other NATO/EU Nationals (e.g., Baltic, Nordic)", group: 1, val: 28, category: "National" },
+          { id: "J2Branches",name: "Single-Service J2 Branches (Army/Navy/Air/Cyber)", group: 1, val: 20, category: "National" },
+
+          // NATO Layer (Strategic/Operational)
+          { id: "JISD",     name: "NATO JISD (Strategic Hub)",           group: 2, val: 28, category: "NATO" },
+          { id: "JISR",     name: "NATO JISR Enterprise & ISR Force",    group: 2, val: 22, category: "NATO" },
+          { id: "NIFC",     name: "NATO Intelligence Fusion Centre",     group: 2, val: 18, category: "NATO" },
+          { id: "HybridCoE",name: "NATO Hybrid CoE",                     group: 2, val: 16, category: "NATO" },
+          { id: "SHAPEJ2",  name: "SHAPE J2",                            group: 2, val: 20, category: "NATO" },
+          { id: "JFCNaples",name: "JFC Naples J2",                       group: 2, val: 15, category: "NATO" },
+          { id: "JFCNorfolk",name: "JFC Norfolk J2",                     group: 2, val: 14, category: "NATO" },
+          { id: "MC",       name: "NATO Military Committee (MC)",        group: 2, val: 24, category: "NATO" },
+          { id: "NAC",      name: "North Atlantic Council (NAC)",        group: 2, val: 26, category: "NATO" },
+          { id: "BalticSentry",name: "Baltic Sentry Initiative",         group: 2, val: 12, category: "NATO" },
+
+          // EU Layer (Analysis/GEOINT)
+          { id: "SIAC",     name: "EU SIAC (INTCEN + EUMS INT)",         group: 3, val: 26, category: "EU" },
+          { id: "SATCEN",   name: "EU SATCEN (GEOINT)",                  group: 3, val: 22, category: "EU" },
+          { id: "HFC",      name: "EU Hybrid Fusion Cell",               group: 3, val: 16, category: "EU" },
+          { id: "EEAS",     name: "European External Action Service",    group: 3, val: 20, category: "EU" },
+          { id: "CSDP",     name: "Common Security & Defence Policy",    group: 3, val: 18, category: "EU" },
+          { id: "Frontex",  name: "Frontex (Hybrid/Internal)",           group: 3, val: 14, category: "EU" },
+          { id: "Europol",  name: "Europol (Niche Threats)",             group: 3, val: 12, category: "EU" },
+          { id: "EUMSStrategy",name: "EU MSS & Strategic Compass",       group: 3, val: 15, category: "EU" }
+        ],
+        links: [
+          // Comprehensive National → NATO Flows (ALL connections)
+          ...["DIA","UKDI","DRM","MIVD","BNDmil","SKW","MUST","AMT","IDFDI","AISI","OtherNat","J2Branches"].map(n => [
+            { source: n, target: "JISD",     strength: 3.5, type: "strong" },
+            { source: n, target: "JISR",     strength: 2.8, type: "strong" },
+            { source: n, target: "NIFC",     strength: 2.0, type: "strong" },
+            { source: n, target: "SHAPEJ2",  strength: 2.5, type: "strong" },
+            { source: n, target: "HybridCoE",strength: 1.8, type: "strong" },
+            { source: n, target: "MC",       strength: 2.2, type: "strong" },
+            { source: n, target: "NAC",      strength: 2.0, type: "strong" },
+            { source: n, target: "BalticSentry", strength: 1.5, type: "baltic" }
+          ]).flat(),
+
+          // Comprehensive National → EU Flows
+          ...["DIA","UKDI","DRM","MIVD","BNDmil","SKW","MUST","AMT","AISI","OtherNat","J2Branches"].map(n => [
+            { source: n, target: "SIAC",     strength: 3.0, type: "strong" },
+            { source: n, target: "SATCEN",   strength: 2.5, type: "strong" },
+            { source: n, target: "HFC",      strength: 2.0, type: "strong" },
+            { source: n, target: "EEAS",     strength: 1.8, type: "strong" },
+            { source: n, target: "CSDP",     strength: 2.2, type: "strong" },
+            { source: n, target: "EUMSStrategy", strength: 1.5, type: "strong" }
+          ]).flat(),
+          // IDFDI (non-EU) weaker to EU
+          { source: "IDFDI", target: "SIAC", strength: 1.0, type: "partial" },
+
+          // NATO Internal (fusion & hierarchy)
+          { source: "JISD", target: "JISR", strength: 3.0, type: "internal" },
+          { source: "JISD", target: "NIFC", strength: 2.5, type: "internal" },
+          { source: "JISD", target: "SHAPEJ2", strength: 2.8, type: "internal" },
+          { source: "JISR", target: "HybridCoE", strength: 2.0, type: "internal" },
+          { source: "SHAPEJ2", target: "JFCNaples", strength: 1.8, type: "internal" },
+          { source: "SHAPEJ2", target: "JFCNorfolk", strength: 1.8, type: "internal" },
+          { source: "MC", target: "NAC", strength: 3.2, type: "internal" },
+          { source: "JISD", target: "MC", strength: 2.5, type: "internal" },
+          { source: "BalticSentry", target: "JISR", strength: 2.0, type: "baltic" },
+
+          // EU Internal (analysis chain)
+          { source: "SIAC", target: "SATCEN", strength: 3.0, type: "internal" },
+          { source: "SIAC", target: "HFC", strength: 2.5, type: "internal" },
+          { source: "EEAS", target: "SIAC", strength: 2.8, type: "internal" },
+          { source: "CSDP", target: "EUMSStrategy", strength: 2.2, type: "internal" },
+          { source: "HFC", target: "Frontex", strength: 1.5, type: "internal" },
+          { source: "HFC", target: "Europol", strength: 1.5, type: "internal" },
+
+          // Cross-Alliance (constrained)
+          { source: "JISD", target: "SIAC", strength: 1.0, type: "constrained", dash: true },
+          { source: "JISR", target: "SATCEN", strength: 1.2, type: "constrained" },
+          { source: "HybridCoE", target: "HFC", strength: 0.8, type: "constrained", dash: true },
+          { source: "NAC", target: "EEAS", strength: 0.9, type: "constrained", dash: true },
+          { source: "BalticSentry", target: "HFC", strength: 1.1, type: "baltic-constrained", dash: true },
+          { source: "OtherNat", target: "BalticSentry", strength: 1.5, type: "duplication" },
+          { source: "SIAC", target: "BalticSentry", strength: 1.2, type: "duplication" }
+        ]
+      };
+
+      const graphElem = document.getElementById('3d-graph');
+      
+      // Color mapping for groups
+      const groupColors = {
+        1: '#4fc3f7', // National - bright cyan blue
+        2: '#ef5350', // NATO - bright red
+        3: '#66bb6a'  // EU - bright green
+      };
+      
+      const Graph = ForceGraph3D()(graphElem)
+        .graphData(graphData)
+        .width(window.innerWidth)
+        .height(window.innerHeight - 50)
+        .backgroundColor('#000000')
+        .nodeColor(d => groupColors[d.group])
+        .nodeVal(d => d.val)
+        .nodeOpacity(1)
+        .nodeResolution(20)
+        .nodeThreeObject(node => {
+          // Create a group to hold both sphere and label
+          const group = new THREE.Group();
+          
+          // Create glowing sphere
+          const sphereGeometry = new THREE.SphereGeometry(Math.cbrt(node.val) * 1.2, 32, 32);
+          const sphereMaterial = new THREE.MeshBasicMaterial({
+            color: groupColors[node.group],
+            transparent: true,
+            opacity: 0.9
+          });
+          const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+          group.add(sphere);
+          
+          // Create outer glow
+          const glowGeometry = new THREE.SphereGeometry(Math.cbrt(node.val) * 1.6, 32, 32);
+          const glowMaterial = new THREE.MeshBasicMaterial({
+            color: groupColors[node.group],
+            transparent: true,
+            opacity: 0.15
+          });
+          const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+          group.add(glow);
+          
+          // Create text label with black background
+          const sprite = new SpriteText(node.id);
+          sprite.color = '#ffffff';
+          sprite.backgroundColor = 'rgba(0,0,0,0.9)';
+          sprite.padding = 4;
+          sprite.borderRadius = 0;
+          sprite.textHeight = 4;
+          sprite.fontFace = 'Arial, sans-serif';
+          sprite.fontWeight = 'bold';
+          sprite.position.y = Math.cbrt(node.val) * 2 + 4;
+          group.add(sprite);
+          
+          return group;
+        })
+        .linkWidth(d => Math.max(0.3, (d.strength || 1) * 0.3))
+        .linkOpacity(0.3)
+        .linkColor(d => {
+          if (d.type === 'constrained' || d.dash) return '#ff9800';
+          if (d.type === 'baltic' || d.type === 'baltic-constrained') return '#ffeb3b';
+          return 'rgba(255,255,255,0.3)';
+        })
+        .linkDirectionalParticles(1)
+        .linkDirectionalParticleSpeed(0.004)
+        .linkDirectionalParticleWidth(1)
+        .linkDirectionalParticleColor(d => {
+          if (d.type === 'constrained' || d.dash) return '#ff9800';
+          return '#ffffff';
+        })
+        .linkCurvature(0.1)
+        .d3Force('charge', d3.forceManyBody().strength(-300))
+        .d3Force('link', d3.forceLink().distance(80).strength(0.1))
+        .d3Force('center', d3.forceCenter())
+        .warmupTicks(200)
+        .cooldownTicks(100)
+        .onNodeHover(node => {
+          const infoEl = document.getElementById('info');
+          if (node) {
+            const colorName = node.group === 1 ? 'National' : node.group === 2 ? 'NATO' : 'EU';
+            infoEl.innerHTML = `<h3>${node.name}</h3><p><strong>${colorName}</strong> | Influence: ${node.val}</p>`;
+          } else {
+            infoEl.innerHTML = `<h3>Full Network View — All Connections</h3><p><strong>Complete Intelligence Web:</strong> Shows ALL connections between entities. This dense view illustrates the true complexity and redundancy.</p>`;
+          }
+        })
+        .onNodeClick(node => {
+          const distance = 80;
+          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+          Graph.cameraPosition(
+            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio },
+            node,
+            1500
+          );
+        });
+
+      // Window resize handler
+      window.addEventListener('resize', () => {
+        Graph.width(window.innerWidth).height(window.innerHeight - 50);
+      });
+
+      // Expose Graph for controls
+      window.Graph = Graph;
+    </script>
+  </body>
+</html>

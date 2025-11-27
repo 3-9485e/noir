@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Euro-Atlantic Defence Intelligence / Hierarchy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { 
+        background: #000000; 
+        font-family: Helvetica, Arial, sans-serif;
+        color: #ffffff;
+        min-height: 100vh;
+      }
+      
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #000000;
+        border-bottom: 1px solid #333;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+      }
+      nav h1 { font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+      nav .links { display: flex; gap: 20px; }
+      nav a { 
+        color: #666; 
+        text-decoration: none; 
+        font-size: 12px; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        transition: color 0.2s;
+        padding: 6px 12px;
+        border: 1px solid transparent;
+      }
+      nav a:hover { color: #fff; border-color: #444; }
+      nav a.active { color: #000; background: #fff; }
+
+      /* Main content */
+      main {
+        padding: 80px 40px 40px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Legend */
+      .legend {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 40px;
+        padding: 20px 0;
+        border-bottom: 1px solid #222;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #888;
+      }
+      .legend-item .dot {
+        width: 10px;
+        height: 10px;
+      }
+      .legend-item.national .dot { background: #4fc3f7; }
+      .legend-item.nato .dot { background: #ef5350; }
+      .legend-item.eu .dot { background: #66bb6a; }
+
+      /* Hierarchy container */
+      .hierarchy {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+      }
+
+      /* Layer */
+      .layer {
+        display: flex;
+        flex-direction: column;
+      }
+      .layer-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+      .layer-line {
+        width: 40px;
+        height: 2px;
+      }
+      .layer.national .layer-line { background: #4fc3f7; }
+      .layer.nato .layer-line { background: #ef5350; }
+      .layer.eu .layer-line { background: #66bb6a; }
+      
+      .layer-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: #666;
+      }
+      .layer.national .layer-title { color: #4fc3f7; }
+      .layer.nato .layer-title { color: #ef5350; }
+      .layer.eu .layer-title { color: #66bb6a; }
+
+      /* Nodes list - vertical */
+      .nodes {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        background: #222;
+        border-left: 2px solid #333;
+        margin-left: 19px;
+      }
+      .layer.national .nodes { border-left-color: #4fc3f7; }
+      .layer.nato .nodes { border-left-color: #ef5350; }
+      .layer.eu .nodes { border-left-color: #66bb6a; }
+
+      .node {
+        display: flex;
+        align-items: center;
+        background: #0a0a0a;
+        padding: 12px 20px;
+        gap: 20px;
+      }
+      .node:hover {
+        background: #111;
+      }
+      .node-id {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100px;
+        flex-shrink: 0;
+      }
+      .layer.national .node-id { color: #4fc3f7; }
+      .layer.nato .node-id { color: #ef5350; }
+      .layer.eu .node-id { color: #66bb6a; }
+      
+      .node-name {
+        flex: 1;
+        font-size: 13px;
+        color: #ccc;
+      }
+      .node-influence {
+        font-size: 11px;
+        color: #555;
+        width: 80px;
+        text-align: right;
+      }
+
+      /* Connections section */
+      .connections {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid #222;
+      }
+      .connections-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: #ff9800;
+        margin-bottom: 25px;
+      }
+      .connection {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 10px 0;
+        border-bottom: 1px solid #111;
+        font-size: 12px;
+      }
+      .connection-from, .connection-to {
+        padding: 6px 12px;
+        border: 1px solid;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 10px;
+      }
+      .connection-from.national, .connection-to.national { border-color: #4fc3f7; color: #4fc3f7; }
+      .connection-from.nato, .connection-to.nato { border-color: #ef5350; color: #ef5350; }
+      .connection-from.eu, .connection-to.eu { border-color: #66bb6a; color: #66bb6a; }
+      .connection-arrow { color: #444; }
+      .connection-type { color: #555; margin-left: auto; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <h1>Defence Intelligence Architecture</h1>
+      <div class="links">
+        <a href="graph.html">Simplified</a>
+        <a href="fullview.html">Full Network</a>
+        <a href="hierarchy.html" class="active">Hierarchy</a>
+      </div>
+    </nav>
+
+    <main>
+      <div class="legend">
+        <div class="legend-item national"><span class="dot"></span>National</div>
+        <div class="legend-item nato"><span class="dot"></span>NATO</div>
+        <div class="legend-item eu"><span class="dot"></span>EU</div>
+      </div>
+
+      <div class="hierarchy">
+        <!-- National Layer -->
+        <div class="layer national">
+          <div class="layer-header">
+            <div class="layer-line"></div>
+            <div class="layer-title">National Defence Intelligence — Foundation</div>
+          </div>
+          <div class="nodes">
+            <div class="node"><span class="node-id">DIA</span><span class="node-name">US Defence Intelligence Agency</span><span class="node-influence">30</span></div>
+            <div class="node"><span class="node-id">OtherNat</span><span class="node-name">Other NATO/EU Nationals (Baltic, Nordic)</span><span class="node-influence">28</span></div>
+            <div class="node"><span class="node-id">UKDI</span><span class="node-name">UK Defence Intelligence</span><span class="node-influence">25</span></div>
+            <div class="node"><span class="node-id">IDFDI</span><span class="node-name">Israel IDF Defence Intelligence</span><span class="node-influence">24</span></div>
+            <div class="node"><span class="node-id">DRM</span><span class="node-name">France DRM/DMI</span><span class="node-influence">22</span></div>
+            <div class="node"><span class="node-id">BNDmil</span><span class="node-name">Germany BND (Military Branch)</span><span class="node-influence">20</span></div>
+            <div class="node"><span class="node-id">J2Branches</span><span class="node-name">Single-Service J2 Branches</span><span class="node-influence">20</span></div>
+            <div class="node"><span class="node-id">MIVD</span><span class="node-name">Netherlands MIVD</span><span class="node-influence">18</span></div>
+            <div class="node"><span class="node-id">AISI</span><span class="node-name">Italy AISI</span><span class="node-influence">17</span></div>
+            <div class="node"><span class="node-id">SKW</span><span class="node-name">Poland SKW</span><span class="node-influence">16</span></div>
+            <div class="node"><span class="node-id">MUST</span><span class="node-name">Sweden MUST</span><span class="node-influence">15</span></div>
+            <div class="node"><span class="node-id">AMT</span><span class="node-name">Denmark DDT&S</span><span class="node-influence">14</span></div>
+          </div>
+        </div>
+
+        <!-- NATO Layer -->
+        <div class="layer nato">
+          <div class="layer-header">
+            <div class="layer-line"></div>
+            <div class="layer-title">NATO — Strategic & Operational</div>
+          </div>
+          <div class="nodes">
+            <div class="node"><span class="node-id">JISD</span><span class="node-name">NATO JISD (Strategic Hub)</span><span class="node-influence">28</span></div>
+            <div class="node"><span class="node-id">NAC</span><span class="node-name">North Atlantic Council</span><span class="node-influence">26</span></div>
+            <div class="node"><span class="node-id">MC</span><span class="node-name">NATO Military Committee</span><span class="node-influence">24</span></div>
+            <div class="node"><span class="node-id">JISR</span><span class="node-name">NATO JISR Enterprise & ISR Force</span><span class="node-influence">22</span></div>
+            <div class="node"><span class="node-id">SHAPEJ2</span><span class="node-name">SHAPE J2</span><span class="node-influence">20</span></div>
+            <div class="node"><span class="node-id">NIFC</span><span class="node-name">NATO Intelligence Fusion Centre</span><span class="node-influence">18</span></div>
+            <div class="node"><span class="node-id">HybridCoE</span><span class="node-name">NATO Hybrid CoE</span><span class="node-influence">16</span></div>
+            <div class="node"><span class="node-id">JFCNaples</span><span class="node-name">JFC Naples J2</span><span class="node-influence">15</span></div>
+            <div class="node"><span class="node-id">JFCNorfolk</span><span class="node-name">JFC Norfolk J2</span><span class="node-influence">14</span></div>
+            <div class="node"><span class="node-id">BalticSentry</span><span class="node-name">Baltic Sentry Initiative</span><span class="node-influence">12</span></div>
+          </div>
+        </div>
+
+        <!-- EU Layer -->
+        <div class="layer eu">
+          <div class="layer-header">
+            <div class="layer-line"></div>
+            <div class="layer-title">European Union — Analysis & GEOINT</div>
+          </div>
+          <div class="nodes">
+            <div class="node"><span class="node-id">SIAC</span><span class="node-name">EU SIAC (INTCEN + EUMS INT)</span><span class="node-influence">26</span></div>
+            <div class="node"><span class="node-id">SATCEN</span><span class="node-name">EU SATCEN (GEOINT)</span><span class="node-influence">22</span></div>
+            <div class="node"><span class="node-id">EEAS</span><span class="node-name">European External Action Service</span><span class="node-influence">20</span></div>
+            <div class="node"><span class="node-id">CSDP</span><span class="node-name">Common Security & Defence Policy</span><span class="node-influence">18</span></div>
+            <div class="node"><span class="node-id">HFC</span><span class="node-name">EU Hybrid Fusion Cell</span><span class="node-influence">16</span></div>
+            <div class="node"><span class="node-id">EUMSStrategy</span><span class="node-name">EU MSS & Strategic Compass</span><span class="node-influence">15</span></div>
+            <div class="node"><span class="node-id">Frontex</span><span class="node-name">Frontex (Hybrid/Internal)</span><span class="node-influence">14</span></div>
+            <div class="node"><span class="node-id">Europol</span><span class="node-name">Europol (Niche Threats)</span><span class="node-influence">12</span></div>
+          </div>
+        </div>
+
+        <!-- Cross-Alliance Connections -->
+        <div class="connections">
+          <div class="connections-title">Cross-Alliance Connections</div>
+          <div class="connection">
+            <span class="connection-from nato">JISD</span>
+            <span class="connection-arrow">→</span>
+            <span class="connection-to eu">SIAC</span>
+            <span class="connection-type">Constrained</span>
+          </div>
+          <div class="connection">
+            <span class="connection-from nato">JISR</span>
+            <span class="connection-arrow">→</span>
+            <span class="connection-to eu">SATCEN</span>
+            <span class="connection-type">Constrained</span>
+          </div>
+          <div class="connection">
+            <span class="connection-from nato">HybridCoE</span>
+            <span class="connection-arrow">→</span>
+            <span class="connection-to eu">HFC</span>
+            <span class="connection-type">Constrained</span>
+          </div>
+          <div class="connection">
+            <span class="connection-from nato">NAC</span>
+            <span class="connection-arrow">→</span>
+            <span class="connection-to eu">EEAS</span>
+            <span class="connection-type">Constrained</span>
+          </div>
+          <div class="connection">
+            <span class="connection-from nato">BalticSentry</span>
+            <span class="connection-arrow">→</span>
+            <span class="connection-to eu">HFC</span>
+            <span class="connection-type">Baltic Focus</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
