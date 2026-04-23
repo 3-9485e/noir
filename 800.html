@@ -1,1 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#0b0d0e">
+	<title>PROJECT800 | Ground Truth Intelligence</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+	<link rel="stylesheet" href="800.css">
+</head>
+<body class="map-page">
+	<div id="appShell">
+		<div id="map"></div>
+		<div class="shell-grid">
+			<header class="hud top-hud">
+				<div class="brand-block">
+					<img
+						class="brand-logo"
+						src="https://imagedelivery.net/WChN5ZQChhT8DYNS_FK_sA/f9c7ba71-5d97-40ad-1fdc-dfb074c1d900/public"
+						alt="PROJECT 800"
+					>
+					<h1>Ground Truth Intelligence Map</h1>
+				</div>
 
+			</header>
+
+			<div id="sideColumn" class="hud side-column is-collapsed">
+				<div id="sideSheet" class="side-sheet">
+					<button
+						id="panelTongue"
+						class="panel-tongue"
+						type="button"
+						aria-controls="countryFeed"
+						aria-expanded="false"
+					>
+						<span class="panel-tongue-arrow" aria-hidden="true">^</span>
+						<span class="panel-tongue-label">Desk</span>
+					</button>
+
+					<aside id="countryFeed" class="feed-panel" aria-live="polite">
+						<div class="feed-head">
+							<div>
+								<h2 id="feedCountry">Hover a highlighted country</h2>
+							</div>
+							<div class="feed-controls">
+								<span class="live-pill">LIVE</span>
+								<label class="focus-toggle" for="autoFocusToggle">
+									<input id="autoFocusToggle" type="checkbox" checked>
+									<span>Auto Focus</span>
+								</label>
+							</div>
+						</div>
+
+						<p id="feedSummary" class="feed-summary">Image and audio snippets from routed field reports will appear here.</p>
+
+						<section class="signal-overview" aria-label="Signal overview">
+							<article id="primaryCard" class="metric-card primary-tone">
+								<div id="primaryCardVisual" class="metric-visual" aria-hidden="true"></div>
+								<p>Primary Direct</p>
+								<strong id="primaryCount">0</strong>
+								<span>Verified submissions</span>
+							</article>
+							<article id="osintCard" class="metric-card osint-tone">
+								<div id="osintCardVisual" class="metric-visual" aria-hidden="true"></div>
+								<p>Secondary OSINT</p>
+								<strong id="osintCount">0</strong>
+								<span>Context corroboration</span>
+							</article>
+							<article id="trustCard" class="metric-card neutral-tone">
+								<div id="trustCardVisual" class="metric-visual" aria-hidden="true"></div>
+								<p>Trust Index</p>
+								<strong id="trustIndex">--</strong>
+								<span>Cross-source confidence</span>
+							</article>
+						</section>
+
+						<div class="source-balance-wrap">
+							<div class="source-balance" role="img" aria-label="Primary and OSINT source balance">
+								<div id="sourceBalancePrimary" class="balance-bar primary-bar" style="width: 50%"></div>
+								<div id="sourceBalanceOsint" class="balance-bar osint-bar" style="width: 50%"></div>
+							</div>
+							<p id="sourceBalanceLabel" class="balance-label">Source balance initializing...</p>
+						</div>
+
+						<section class="evidence-section" aria-label="Evidence frames">
+							<div class="section-header">
+								<p>Evidence Frames</p>
+								<span id="frameStamp">Awaiting country hover</span>
+							</div>
+							<div id="cinemaStrip" class="cinema-strip"></div>
+						</section>
+
+						<section class="timeline-section" aria-label="Chain of custody log">
+							<div class="section-header">
+								<p>Chain of Custody</p>
+								<span>Latest 8 packets</span>
+							</div>
+							<ul id="pipelineLog" class="pipeline-log"></ul>
+						</section>
+					</aside>
+
+					<section class="legend-dock" aria-label="Map key">
+						<div class="legend" role="list" aria-label="Map legend">
+							<div role="listitem"><span class="legend-chip primary"></span>Primary source signal</div>
+							<div role="listitem"><span class="legend-chip osint"></span>Secondary social and OSINT</div>
+							<div role="listitem"><span class="legend-chip country"></span>Country heat zones</div>
+						</div>
+					</section>
+				</div>
+			</div>
+
+			<footer class="hud bottom-hud">
+				<p id="statusLine" class="status-line">Agent mesh standing by for first routed packet.</p>
+			</footer>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+	<script src="800.js"></script>
+</body>
+</html>
